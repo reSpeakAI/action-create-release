@@ -1,2 +1,2 @@
 # action-create-release
-Github Action for version bumping
+Github Action for semantic version bumping, commit tagging, and release creation

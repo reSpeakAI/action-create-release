@@ -1,0 +1,42 @@
+name: "Bump and Release"
+description: "Bump the semantic version number and create a release"
+author: "reSpeakAI"
+
+branding:
+  icon: "anchor"
+  color: "purple"
+
+inputs:
+  token:
+    description: "GitHub Access token"
+    required: true
+  repository:
+    description: "The repository name in full format (owner/repo)"
+    required: true
+  build_name:
+    description: "The name for builds. Default: 'build'. Example: 'v0.1.1-build.0'"
+    required: false
+  type:
+    description: "Wanted bump type (build, patch, minor, major). Default: 'build'"
+    required: false
+  branch:
+    description: "Branch name. Default: 'main'"
+    required: false
+  current_sha:
+    description: "The sha of the current commit to increment the version of"
+    required: true
+  previous_sha:
+    description: "The sha of the previous commit"
+    required: true
+
+outputs:
+  release_id:
+    description: "Release Github ID"
+  previous_tag:
+    description: "The previous tag incremented from"
+  current_tag:
+    description: "The new tag created"
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
