@@ -2,7 +2,7 @@
 
 from github import Github
 import os
-from .utils import *
+from src.utils import *
 import time
 
 # Get inputs
