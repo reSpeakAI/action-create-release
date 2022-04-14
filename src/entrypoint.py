@@ -2,7 +2,7 @@
 
 from github import Github
 import os
-from src.utils import *
+import utils
 import time
 
 # Get inputs
@@ -23,10 +23,14 @@ assert isinstance(previous_sha, str)
 # Get the Repo
 G = Github(token)
 repo = G.get_repo(repository)
+print(f'DEBUG BUMP_TYPE: {bump_type}')
+print(f'DEBUG PREVIOUS_SHA: {previous_sha}')
+print(f'DEBUG CURRENT_SHA: {current_sha}')
 
 # Check if another workflow is running
 workflow_ids = []  # Pass in names and we convert?
-workflows = get_running_workflows(repo, [current_sha, previous_sha], workflow_ids)
+workflows = utils.get_running_workflows(repo, [previous_sha], workflow_ids)
+print(f'DEBUG WORKFLOWS: {workflows}')
 watch_dog = 0
 while workflows:
     print('Waiting on workflows:')
@@ -40,16 +44,16 @@ while workflows:
     assert watch_dog < 200
 
     # Update running workflows
-    workflows = get_running_workflows(repo, [current_sha, previous_sha], workflow_ids)
+    workflows = utils.get_running_workflows(repo, [previous_sha], workflow_ids)
 
 # Get most recent tag
-previous_tag = get_previous_version(repo)
+previous_tag = utils.get_previous_version(repo)
 
 # Increment the tag
-current_tag = bump_version(previous_tag, bump_type, build_name)
+current_tag = utils.bump_version(previous_tag, bump_type, build_name)
 
 # Push tag and create github release
-release = create_release(repo, current_tag, current_sha, bump_type)
+release = utils.create_release(repo, current_tag, current_sha, bump_type)
 
 # Output formatting function
 print('::set-output name=current_tag::{}'.format(current_tag))

@@ -1,5 +1,6 @@
 from typing import List
-from github import Repository, WorkflowRun, GitRelease
+from github import Repository, GitRelease
+from github.WorkflowRun import WorkflowRun
 import re
 
 
@@ -8,22 +9,30 @@ def get_running_workflows(repo: Repository,
                           workflow_ids: List[int] = [],
                           branches: List[str] = []
                           ) -> List[WorkflowRun]:
-    running_workflows = []
-    for s in ['queued', 'in_progress']:
-        running_workflows.extend([x for x in repo.get_workflow_runs(status=s)])
 
+    running_workflows = []
+    print(f'DEBUG WORKFLOWS ALL: {[(x.id, x.status, x.head_sha) for x in repo.get_workflow_runs()]}')
+
+    # Filter by status
+    running_workflows.extend([x for x in repo.get_workflow_runs() if x.status in ['queued', 'in_progress']])
+
+    print(f'DEBUG WORKFLOWS STATUS: {[(x.id, x.status, x.head_sha) for x in running_workflows]}')
     # Filter by branches
     if branches:
         running_workflows = [x for x in running_workflows if x.head_branch in branches]
 
+    print(f'DEBUG WORKFLOWS BRANCHES: {[(x.id, x.status, x.head_sha) for x in running_workflows]}')
     # Filter by specific workflow ids instead of all
     if workflow_ids:
         running_workflows = [x for x in running_workflows if x.workflow_id in workflow_ids]
 
+    print(f'DEBUG WORKFLOWS WORKFLOW_IDS: {[(x.id, x.status, x.head_sha) for x in running_workflows]}')
     # Filter by specific shas
     if shas:
+        print(f'FILTER BY SHAS: {shas}')
         running_workflows = [x for x in running_workflows if x.head_sha in shas]
 
+    print(f'DEBUG WORKFLOWS SHAS: {[(x.id, x.status, x.head_sha) for x in running_workflows]}')
     return running_workflows
 
 
@@ -57,18 +66,18 @@ def bump_version(previous_version: str, bump_type: str, build_name: str) -> str:
     match = reg.match(previous_version.replace('v', ''))
     assert match
 
-    if bump_type is 'build':
+    if bump_type == 'build':
         build_meta = match['buildmetadata']
         build_count = (build_meta or '.-1').split('.')[1]
         increment_bc = int(build_count) + 1
         current_version = f'{match["major"]}.{match["minor"]}.{match["patch"]}+{build_name}.{increment_bc}'
-    elif bump_type is 'patch':
+    elif bump_type == 'patch':
         patch = int(match['patch']) + 1
         current_version = f'{match["major"]}.{match["minor"]}.{patch}'
-    elif bump_type is 'minor':
+    elif bump_type == 'minor':
         minor = int(match['minor']) + 1
         current_version = f'{match["major"]}.{minor}.{match["patch"]}'
-    elif bump_type is 'major':
+    elif bump_type == 'major':
         major = int(match['major']) + 1
         current_version = f'{match["major"]}.{major}.{match["patch"]}'
 
