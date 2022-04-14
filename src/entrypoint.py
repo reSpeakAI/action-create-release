@@ -27,12 +27,20 @@ repo = G.get_repo(repository)
 # Check if another workflow is running
 workflow_ids = []  # Pass in names and we convert?
 workflows = get_running_workflows(repo, [current_sha, previous_sha], workflow_ids)
+watch_dog = 0
 while workflows:
     print('Waiting on workflows:')
     for flow in workflows:
         flow_name = repo.get_workflow(flow.workflow_id).name
         print(f'[{flow.id}] NAME: {flow_name} STATUS: {flow.status} SHA: {flow.head_sha}')
     time.sleep(10)
+
+    # Keep track of how long we are doing this and exit if number reaches too high
+    watch_dog = watch_dog + 1
+    assert watch_dog < 200
+
+    # Update running workflows
+    workflows = get_running_workflows(repo, [current_sha, previous_sha], workflow_ids)
 
 # Get most recent tag
 previous_tag = get_previous_version(repo)

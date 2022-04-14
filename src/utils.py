@@ -3,10 +3,18 @@ from github import Repository, WorkflowRun, GitRelease
 import re
 
 
-def get_running_workflows(repo: Repository, shas: List[str] = [], workflow_ids: List[int] = []) -> List[WorkflowRun]:
+def get_running_workflows(repo: Repository,
+                          shas: List[str] = [],
+                          workflow_ids: List[int] = [],
+                          branches: List[str] = []
+                          ) -> List[WorkflowRun]:
     running_workflows = []
     for s in ['queued', 'in_progress']:
         running_workflows.extend([x for x in repo.get_workflow_runs(status=s)])
+
+    # Filter by branches
+    if branches:
+        running_workflows = [x for x in running_workflows if x.head_branch in branches]
 
     # Filter by specific workflow ids instead of all
     if workflow_ids:
