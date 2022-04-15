@@ -23,14 +23,10 @@ assert isinstance(previous_sha, str)
 # Get the Repo
 G = Github(token)
 repo = G.get_repo(repository)
-print(f'DEBUG BUMP_TYPE: {bump_type}')
-print(f'DEBUG PREVIOUS_SHA: {previous_sha}')
-print(f'DEBUG CURRENT_SHA: {current_sha}')
 
 # Check if another workflow is running
 workflow_ids = []  # Pass in names and we convert?
 workflows = utils.get_running_workflows(repo, [previous_sha], workflow_ids)
-print(f'DEBUG WORKFLOWS: {workflows}')
 watch_dog = 0
 while workflows:
     print('Waiting on workflows:')

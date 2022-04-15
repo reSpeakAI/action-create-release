@@ -11,28 +11,22 @@ def get_running_workflows(repo: Repository,
                           ) -> List[WorkflowRun]:
 
     running_workflows = []
-    print(f'DEBUG WORKFLOWS ALL: {[(x.id, x.status, x.head_sha) for x in repo.get_workflow_runs()]}')
 
     # Filter by status
     running_workflows.extend([x for x in repo.get_workflow_runs() if x.status in ['queued', 'in_progress']])
 
-    print(f'DEBUG WORKFLOWS STATUS: {[(x.id, x.status, x.head_sha) for x in running_workflows]}')
     # Filter by branches
     if branches:
         running_workflows = [x for x in running_workflows if x.head_branch in branches]
 
-    print(f'DEBUG WORKFLOWS BRANCHES: {[(x.id, x.status, x.head_sha) for x in running_workflows]}')
     # Filter by specific workflow ids instead of all
     if workflow_ids:
         running_workflows = [x for x in running_workflows if x.workflow_id in workflow_ids]
 
-    print(f'DEBUG WORKFLOWS WORKFLOW_IDS: {[(x.id, x.status, x.head_sha) for x in running_workflows]}')
     # Filter by specific shas
     if shas:
-        print(f'FILTER BY SHAS: {shas}')
         running_workflows = [x for x in running_workflows if x.head_sha in shas]
 
-    print(f'DEBUG WORKFLOWS SHAS: {[(x.id, x.status, x.head_sha) for x in running_workflows]}')
     return running_workflows
 
 
