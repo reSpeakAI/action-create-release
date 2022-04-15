@@ -51,7 +51,10 @@ def bump_version(previous_version: str, bump_type: str, build_name: str) -> str:
 
     # Return the default if no previous version found
     if not previous_version:
-        return default
+        if bump_type == 'build':
+            return f'{default}-{build_name}.0'
+        else:
+            return default
 
     # Official semantic version regex from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
     reg = re.compile(
