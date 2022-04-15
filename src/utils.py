@@ -61,10 +61,10 @@ def bump_version(previous_version: str, bump_type: str, build_name: str) -> str:
     assert match
 
     if bump_type == 'build':
-        build_meta = match['buildmetadata']
+        build_meta = match['prerelease']
         build_count = (build_meta or '.-1').split('.')[1]
         increment_bc = int(build_count) + 1
-        current_version = f'{match["major"]}.{match["minor"]}.{match["patch"]}+{build_name}.{increment_bc}'
+        current_version = f'{match["major"]}.{match["minor"]}.{match["patch"]}-{build_name}.{increment_bc}'
     elif bump_type == 'patch':
         patch = int(match['patch']) + 1
         current_version = f'{match["major"]}.{match["minor"]}.{patch}'
