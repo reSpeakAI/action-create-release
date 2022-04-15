@@ -70,10 +70,10 @@ def bump_version(previous_version: str, bump_type: str, build_name: str) -> str:
         current_version = f'{match["major"]}.{match["minor"]}.{patch}'
     elif bump_type == 'minor':
         minor = int(match['minor']) + 1
-        current_version = f'{match["major"]}.{minor}.{match["patch"]}'
+        current_version = f'{match["major"]}.{minor}.0'
     elif bump_type == 'major':
         major = int(match['major']) + 1
-        current_version = f'{major}.{match["minor"]}.{match["patch"]}'
+        current_version = f'{major}.0.0'
 
     return f'v{current_version}'
 
