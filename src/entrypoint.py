@@ -29,15 +29,15 @@ workflow_ids = []  # Pass in names and we convert?
 workflows = utils.get_running_workflows(repo, [previous_sha], workflow_ids)
 watch_dog = 0
 while workflows:
-    print('Waiting on workflows:')
+    print(f'Waiting on workflows ({watch_dog*30}s):')
     for flow in workflows:
         flow_name = repo.get_workflow(flow.workflow_id).name
         print(f'[{flow.id}] NAME: {flow_name} STATUS: {flow.status} SHA: {flow.head_sha}')
-    time.sleep(20)
+    time.sleep(30)
 
     # Keep track of how long we are doing this and exit if number reaches too high
     watch_dog = watch_dog + 1
-    assert watch_dog < 100
+    assert watch_dog < 70
 
     # Update running workflows
     workflows = utils.get_running_workflows(repo, [previous_sha], workflow_ids)
