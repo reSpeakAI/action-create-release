@@ -40,7 +40,6 @@ def get_previous_version(repo: Repository) -> str | None:
 
     # Get the latest release
     if releases:
-        print(f'Found release {releases[0].tag_name}')
         return releases[0].tag_name
 
     print('Can\'t find release')

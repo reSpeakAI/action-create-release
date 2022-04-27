@@ -44,9 +44,11 @@ while workflows:
 
 # Get most recent tag
 previous_tag = utils.get_previous_version(repo)
+print(f'Previous release: {previous_tag}')
 
 # Increment the tag
 current_tag = utils.bump_version(previous_tag, bump_type, build_name)
+print(f'New release: {current_tag}')
 
 # Push tag and create github release
 release = utils.create_release(repo, current_tag, current_sha, bump_type)
