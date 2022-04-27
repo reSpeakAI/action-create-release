@@ -33,11 +33,11 @@ while workflows:
     for flow in workflows:
         flow_name = repo.get_workflow(flow.workflow_id).name
         print(f'[{flow.id}] NAME: {flow_name} STATUS: {flow.status} SHA: {flow.head_sha}')
-    time.sleep(10)
+    time.sleep(20)
 
     # Keep track of how long we are doing this and exit if number reaches too high
     watch_dog = watch_dog + 1
-    assert watch_dog < 200
+    assert watch_dog < 100
 
     # Update running workflows
     workflows = utils.get_running_workflows(repo, [previous_sha], workflow_ids)
