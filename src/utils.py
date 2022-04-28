@@ -56,10 +56,19 @@ def get_previous_version(repo: Repository) -> str | None:
         # Official semantic version regex from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
         reg = re.compile(
             r'^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$')
+
         # Strip out the v in the version number and match it to the regex
         match1 = reg.match(r1.replace('v', ''))
         match2 = reg.match(r2.replace('v', ''))
 
+        # If one of these releases is not a semver release then just skip comparing
+        if not r2:
+            return -1
+
+        if not r1:
+            return 1
+
+        # Compare the semver versions and find the highest version
         cmp_major = int(match2['major']) - int(match1['major'])
         if cmp_major != 0:
             return cmp_major
