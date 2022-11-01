@@ -54,6 +54,11 @@ print(f'New release: {current_tag}')
 release = utils.create_release(repo, current_tag, current_sha, bump_type)
 
 # Output formatting function
-print('::set-output name=current_tag::{}'.format(current_tag))
-print('::set-output name=previous_tag::{}'.format(previous_tag))
-print('::set-output name=release_id::{}'.format(release.id))
+with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+    out.writelines(
+        [
+            f'current_tag={current_tag}\n',
+            f'previous_tag={previous_tag}\n',
+            f'release_id={release.id}\n',
+        ]
+    )
